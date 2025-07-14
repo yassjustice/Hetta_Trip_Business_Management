@@ -1,0 +1,23 @@
+# Render.com deployment configuration
+services:
+  - type: web
+    name: trip-tex
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false  # Set this in Render dashboard
+      - key: JWT_SECRET
+        sync: false  # Set this in Render dashboard
+      - key: CLIENT_URL
+        value: https://trip-tex.onrender.com  # Replace with your actual domain
+
+databases:
+  - name: trip-tex-mongo
+    databaseName: triptex
+    user: trip-tex-user
