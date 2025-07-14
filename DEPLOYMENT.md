@@ -1,5 +1,23 @@
 # Deployment Guide for Trip-Tex MERN Application
 
+## 🌐 Free Domain Names Included!
+
+### Render.com (RECOMMENDED)
+- ✅ **Free subdomain**: `https://your-app-name.onrender.com`
+- ✅ **HTTPS included**: Secure connection automatically
+- ✅ **No expiration**: Domain stays active with your app
+- ✅ **Custom naming**: You choose the app name
+
+### Railway.app  
+- ✅ **Free subdomain**: `https://your-app-name.railway.app`
+- ✅ **HTTPS included**: Secure connection automatically
+
+### Heroku
+- ✅ **Free subdomain**: `https://your-app-name.herokuapp.com`
+- ✅ **HTTPS included**: Secure connection automatically
+
+**🎯 No domain purchase needed! All services provide free subdomains.**
+
 ## 🚀 Recommended Free Hosting Options
 
 ### Option 1: Render.com (BEST FOR BEGINNERS)
@@ -51,9 +69,19 @@
 NODE_ENV=production
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/triptex
 JWT_SECRET=your-super-secret-jwt-key-here
-CLIENT_URL=https://your-app-domain.com
+CLIENT_URL=https://your-app-name.onrender.com  # FREE domain from Render
 PORT=5000
 ```
+
+### 💡 Domain Examples:
+- **Render**: `https://trip-tex.onrender.com`
+- **Railway**: `https://trip-tex.railway.app`  
+- **Heroku**: `https://trip-tex.herokuapp.com`
+
+Choose any name you like! Examples:
+- `trip-tex-app.onrender.com`
+- `fashion-sourcing.onrender.com`
+- `textile-marketplace.onrender.com`
 
 ## 📦 Build Process:
 1. `npm install` - Install backend dependencies

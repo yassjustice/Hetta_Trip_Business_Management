@@ -15,9 +15,7 @@ services:
       - key: JWT_SECRET
         sync: false  # Set this in Render dashboard
       - key: CLIENT_URL
-        value: https://trip-tex.onrender.com  # Replace with your actual domain
+        value: https://trip-tex.onrender.com  # Your FREE domain from Render
 
-databases:
-  - name: trip-tex-mongo
-    databaseName: triptex
-    user: trip-tex-user
+# Note: If you want a custom domain later, you can add it in Render dashboard
+# Custom domains require a paid plan ($7/month)
