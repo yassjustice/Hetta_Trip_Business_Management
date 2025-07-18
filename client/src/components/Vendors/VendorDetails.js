@@ -470,7 +470,11 @@ const VendorDetails = () => {
                 {vendor.certifications.map((cert, index) => (
                   <div key={index} className="flex items-center">
                     <ShieldCheckIcon className="h-4 w-4 text-green-500 mr-2" />
-                    <span className="text-sm text-gray-900">{cert}</span>
+                    <span className="text-sm text-gray-900">
+                      {typeof cert === 'object' && cert !== null
+                        ? `${cert.name || 'Unnamed'}${cert.issuedBy ? ` (${cert.issuedBy})` : ''}${cert.validUntil ? `, valid until ${new Date(cert.validUntil).toLocaleDateString()}` : ''}${cert.verified ? ' ✔' : ''}`
+                        : cert}
+                    </span>
                   </div>
                 ))}
               </div>

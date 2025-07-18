@@ -71,34 +71,19 @@ const VendorTable = ({
   );
 
   // Get ordered and visible columns
-  const orderedColumns = columnOrder
+  // Ensure all columns from DEFAULT_COLUMNS are present in columnOrder and visibleColumns
+  const allColumnKeys = columns.map(col => col.key);
+  const mergedColumnOrder = Array.from(new Set([...allColumnKeys, ...columnOrder]));
+  const mergedVisibleColumns = Array.from(new Set([...allColumnKeys, ...visibleColumns]));
+
+  const orderedColumns = mergedColumnOrder
     .map(key => columns.find(col => col.key === key))
-    .filter(col => col && visibleColumns.includes(col.key));
+    .filter(col => col && mergedVisibleColumns.includes(col.key));
 
   // Column renderers
   const renderColumnHeader = (column) => {
-    const getResponsiveClass = (key) => {
-      switch (key) {
-        case 'businessType':
-          return 'hidden md:table-cell';
-        case 'location':
-          return 'hidden lg:table-cell';
-        case 'city':
-          return 'hidden xl:table-cell';
-        case 'phone':
-          return 'hidden xl:table-cell';
-        case 'website':
-          return 'hidden 2xl:table-cell';
-        case 'contact':
-          return 'hidden xl:table-cell';
-        case 'products':
-          return 'hidden 2xl:table-cell';
-        case 'rating':
-          return 'hidden md:table-cell';
-        default:
-          return '';
-      }
-    };
+    // Remove responsive hiding, always show columns
+    const getResponsiveClass = () => '';
 
     const getMinWidthClass = (minWidth) => {
       if (!minWidth) return '';
@@ -106,7 +91,7 @@ const VendorTable = ({
       return `min-w-[${minWidth}]`;
     };
 
-    if (['companyName', 'businessType', 'location', 'city', 'status', 'rating'].includes(column.key)) {
+    if (['companyName', 'businessType', 'location', 'city', 'status', 'rating', 'serviceTypes', 'printingMethods', 'moq', 'priceRange', 'certifications'].includes(column.key)) {
       return (
         <SortableHeader 
           key={column.key}
@@ -130,28 +115,8 @@ const VendorTable = ({
   };
 
   const renderColumnCell = (vendor, column) => {
-    const getResponsiveClass = (key) => {
-      switch (key) {
-        case 'businessType':
-          return 'hidden md:table-cell';
-        case 'location':
-          return 'hidden lg:table-cell';
-        case 'city':
-          return 'hidden xl:table-cell';
-        case 'phone':
-          return 'hidden xl:table-cell';
-        case 'website':
-          return 'hidden 2xl:table-cell';
-        case 'contact':
-          return 'hidden xl:table-cell';
-        case 'products':
-          return 'hidden 2xl:table-cell';
-        case 'rating':
-          return 'hidden md:table-cell';
-        default:
-          return '';
-      }
-    };
+    // Remove responsive hiding, always show columns
+    const getResponsiveClass = () => '';
 
     switch (column.key) {
       case 'companyName':
@@ -338,6 +303,92 @@ const VendorTable = ({
           </td>
         );
 
+      case 'serviceTypes':
+        return (
+          <td key={column.key} className={`${getResponsiveClass('serviceTypes')} px-4 py-4`}>
+            <div className="flex flex-wrap gap-1 max-w-[160px]">
+              {vendor.serviceTypes?.slice(0, 2).map((service, index) => (
+                <span key={index} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-100 text-green-800 truncate">
+                  {service}
+                </span>
+              ))}
+              {vendor.serviceTypes?.length > 2 && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                  +{vendor.serviceTypes.length - 2}
+                </span>
+              )}
+            </div>
+          </td>
+        );
+
+      case 'printingMethods':
+        return (
+          <td key={column.key} className={`${getResponsiveClass('printingMethods')} px-4 py-4`}>
+            <div className="flex flex-wrap gap-1 max-w-[150px]">
+              {vendor.printingMethods?.slice(0, 2).map((method, index) => (
+                <span key={index} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-800 truncate">
+                  {method}
+                </span>
+              ))}
+              {vendor.printingMethods?.length > 2 && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                  +{vendor.printingMethods.length - 2}
+                </span>
+              )}
+            </div>
+          </td>
+        );
+
+      case 'moq':
+        return (
+          <td key={column.key} className={`${getResponsiveClass('moq')} px-4 py-4 whitespace-nowrap`}>
+            <div className="text-sm text-gray-900">
+              {vendor.businessPolicies?.moq || vendor.moq || vendor.minimumOrderQuantity?.value || '-'}
+            </div>
+          </td>
+        );
+
+      case 'priceRange':
+        return (
+          <td key={column.key} className={`${getResponsiveClass('priceRange')} px-4 py-4 whitespace-nowrap`}>
+            <div className="text-sm text-gray-900">
+              {vendor.priceRanges?.length > 0 ? vendor.priceRanges[0] : vendor.pricing?.priceRange || vendor.priceRange || '-'}
+            </div>
+          </td>
+        );
+
+      case 'certifications':
+        return (
+          <td key={column.key} className={`${getResponsiveClass('certifications')} px-4 py-4`}>
+            <div className="flex flex-wrap gap-1 max-w-[140px]">
+              {vendor.certifications?.slice(0, 2).map((cert, index) => {
+                if (typeof cert === 'object' && cert !== null) {
+                  // Render name, issuedBy, validUntil, verified if present
+                  return (
+                    <span key={index} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800 truncate">
+                      {cert.name || 'Unnamed'}
+                      {cert.issuedBy ? ` (${cert.issuedBy})` : ''}
+                      {cert.validUntil ? `, valid until ${cert.validUntil}` : ''}
+                      {cert.verified ? ' ✔' : ''}
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span key={index} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800 truncate">
+                      {cert}
+                    </span>
+                  );
+                }
+              })}
+              {vendor.certifications?.length > 2 && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                  +{vendor.certifications.length - 2}
+                </span>
+              )}
+            </div>
+          </td>
+        );
+
       case 'actions':
         return (
           <td key={column.key} className="px-4 py-4 whitespace-nowrap text-sm font-medium">
@@ -368,7 +419,17 @@ const VendorTable = ({
         );
 
       default:
-        return <td key={column.key} className="px-4 py-4 whitespace-nowrap">-</td>;
+        // Fallback: display raw value if present
+        const value = vendor[column.key];
+        let displayValue = '-';
+        if (value !== undefined && value !== null) {
+          if (typeof value === 'object') {
+            displayValue = JSON.stringify(value);
+          } else {
+            displayValue = value;
+          }
+        }
+        return <td key={column.key} className="px-4 py-4 whitespace-nowrap">{displayValue}</td>;
     }
   };
 

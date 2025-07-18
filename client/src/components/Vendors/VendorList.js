@@ -10,6 +10,8 @@ import VendorEmptyState from './VendorEmptyState';
 import VendorErrorState from './VendorErrorState';
 import useVendorState, { DEFAULT_COLUMNS, FILTER_OPTIONS } from './useVendorState';
 
+import BulkVendorImport from './BulkVendorImport';
+
 const VendorList = () => {
   const {
     // State
@@ -63,6 +65,8 @@ const VendorList = () => {
 
   return (
     <div className="space-y-6">
+      {/* Bulk Import UI */}
+      <BulkVendorImport onImport={loadVendors} />
       {/* Header */}
       <VendorListHeader
         vendors={vendors}

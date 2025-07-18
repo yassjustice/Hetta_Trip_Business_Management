@@ -14,7 +14,7 @@ import VendorForm from './components/Vendors/VendorForm';
 import ProjectList from './components/Projects/ProjectList';
 import ProjectDetails from './components/Projects/ProjectDetails';
 import ProjectForm from './components/Projects/ProjectForm';
-import QuoteComparison from './components/Quotes/QuoteComparison';
+import ResearchDashboard from './components/Research/ResearchDashboard';
 import Profile from './components/Profile/Profile';
 import LoadingSpinner from './components/Common/LoadingSpinner';
 import ErrorBoundary from './components/Common/ErrorBoundary';
@@ -111,8 +111,8 @@ function App() {
               <Route path="projects/:id" element={<ProjectDetails />} />
               <Route path="projects/:id/edit" element={<ProjectForm />} />
               
-              {/* Quote Comparison */}
-              <Route path="quotes/compare" element={<QuoteComparison />} />
+              {/* Research Section */}
+              <Route path="research" element={<ResearchDashboard />} />
               
               {/* Profile */}
               <Route path="profile" element={<Profile />} />

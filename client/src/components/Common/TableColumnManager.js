@@ -9,12 +9,12 @@ import {
 } from '@heroicons/react/24/outline';
 
 const TableColumnManager = ({ 
-  columns, 
-  visibleColumns, 
-  columnOrder, 
-  onVisibilityChange, 
-  onOrderChange, 
-  onResetToDefault,
+  columns = [], 
+  visibleColumns = [], 
+  columnOrder = [], 
+  onVisibilityChange = () => {}, 
+  onOrderChange = () => {}, 
+  onResetToDefault = () => {},
   storageKey = 'table-columns',
   statusEditingEnabled = false,
   onStatusEditingToggle = null
@@ -24,8 +24,16 @@ const TableColumnManager = ({
 
   // Initialize local columns based on current settings
   useEffect(() => {
-    const orderedColumns = columnOrder.map(key => {
-      const column = columns.find(col => col.key === key);
+    if (!columns || columns.length === 0) {
+      setLocalColumns([]);
+      return;
+    }
+
+    // If no columnOrder provided, use the order from columns array
+    const effectiveOrder = columnOrder.length > 0 ? columnOrder : columns.map(col => col.key || col.id);
+    
+    const orderedColumns = effectiveOrder.map(key => {
+      const column = columns.find(col => (col.key || col.id) === key);
       return column ? {
         ...column,
         visible: visibleColumns.includes(key)
@@ -34,10 +42,10 @@ const TableColumnManager = ({
 
     // Add any columns that weren't in the order
     const missingColumns = columns.filter(col => 
-      !columnOrder.includes(col.key)
+      !effectiveOrder.includes(col.key || col.id)
     ).map(col => ({
       ...col,
-      visible: visibleColumns.includes(col.key)
+      visible: visibleColumns.includes(col.key || col.id)
     }));
 
     setLocalColumns([...orderedColumns, ...missingColumns]);
@@ -121,7 +129,7 @@ const TableColumnManager = ({
               <div className="p-4 space-y-2">
                 {localColumns.map((column, index) => (
                   <div
-                    key={column.key}
+                    key={column.key || index}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center space-x-3 flex-1 min-w-0">

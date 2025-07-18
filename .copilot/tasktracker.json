@@ -1,0 +1,41 @@
+[
+  {
+    "id": "mt_fix_extraction_ai_context_001",
+    "name": "Fix Extraction AI Context and Logging",
+    "status": "completed",
+    "completionCriteria": "Extraction logs contain valid, readable results with all required AI context fields; frontend displays results with correct fields.",
+    "timestamp": "2024-06-09T00:15:00Z"
+  }
+  ,
+  {
+    "id": "mt_ai_result_merge_002",
+    "name": "Implement AI-driven result contextualization and merge logic",
+    "status": "active",
+    "completionCriteria": "Research results are scored and merged based on AI intent/context; frontend displays top-ranked results.",
+    "timestamp": "2025-07-18T00:00:00Z"
+  }
+  ,
+  {
+    "id": "mt_autonomous_bulk_research_001",
+    "name": "Autonomous Bulk Research & Structured Extraction",
+    "status": "active",
+    "completionCriteria": "System processes bulk links, extracts structured info, outputs valid CSV/JSON, and displays results in frontend table.",
+    "timestamp": "2025-07-18T00:10:00Z"
+  }
+  ,
+  {
+    "id": "mt_merged_link_bulk_extract_003",
+    "name": "Merged Link Extraction & Frontend Bulk Extract UI",
+    "status": "active",
+    "completionCriteria": "Search term triggers merged link list (GoogleSearch, ScrapingBee, AI deep search), processed via bulk extraction, results surfaced in frontend bulk extract UI.",
+    "timestamp": "2025-07-18T12:00:00Z"
+  }
+  ,
+  {
+    "id": "mt_extraction_log_improvement_004",
+    "name": "Improve Extraction Logging, Error Handling, and Result Validation",
+    "status": "active",
+    "completionCriteria": "Logs show clear error/status for each extraction; AI context and completeness are always present; frontend displays error/status columns for failed/partial results.",
+    "timestamp": "2025-07-18T15:10:00Z"
+  }
+]

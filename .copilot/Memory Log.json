@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2024-06-09T00:00:00Z",
+    "event": "Diagnosis: Extraction logs malformed, AI context missing/null, frontend shows zero results. Root cause: AI enrichment and logging not populating required fields."
+  },
+  {
+    "timestamp": "2024-06-09T00:10:00Z",
+    "event": "Fix applied: DataExtractionService.js now calls AIServiceManager.classifyEntityType and merges all required fields with fallbacks. AIServiceManager.js always returns complete context object. debugLogger.js ensures address is string and logs are valid JSON."
+  },
+  {
+    "timestamp": "2025-07-18T00:10:00Z",
+    "event": "Microtask started: Autonomous Bulk Research & Structured Extraction. For each search term, list bulk links, use AI to visit and extract structured business info, output clean CSV/JSON, and surface results in frontend table."
+  },
+  {
+    "timestamp": "2025-07-18T00:00:00Z",
+    "event": "Microtask started: Implement AI-driven result contextualization and merge logic. Upgrade backend to merge and score research results using AI intent/context, and surface the most relevant results in the frontend."
+  },
+  {
+    "timestamp": "2025-07-18T12:00:00Z",
+    "event": "Detour: Search term triggers merged link list (GoogleSearch, ScrapingBee, AI deep search), processed via bulk extraction, results surfaced in frontend bulk extract UI. Progress checkpoint saved."
+  },
+  {
+    "timestamp": "2025-07-18T15:10:00Z",
+    "event": "Log analysis complete. Recurring errors: AI quota exceeded, fallback failures, extraction errors (maxContentLength, certificate), missing address/country/price. Patch planned: always log extraction status, error, completenessScore, and AI context for every vendorObj. Update logs to JSON per line, include error/context. Next: Patch DataExtractionService.js and debugLogger.js for improved logging and error handling."
+  }
+]

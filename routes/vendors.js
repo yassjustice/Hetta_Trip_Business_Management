@@ -3,9 +3,88 @@ const { body, validationResult, query } = require('express-validator');
 const Vendor = require('../models/Vendor');
 const { auth } = require('../middleware/auth');
 
+const multer = require('multer');
+const upload = multer();
+const { parse: csvParse } = require('csv-parse/sync');
+
 const router = express.Router();
 
 // Get vendor statistics (must be before /:id route)
+
+// Bulk import vendors from CSV text
+router.post('/bulk-import', auth, async (req, res) => {
+  try {
+    const { csv } = req.body;
+    if (!csv) return res.status(400).json({ message: 'CSV data required' });
+    const records = csvParse(csv, { columns: true, skip_empty_lines: true, delimiter: ',' });
+    const vendors = records.map(row => ({
+      companyName: row.companyName,
+      businessType: row.businessType,
+      description: row.description,
+      contactPerson: {
+        name: row['contactPerson.name'],
+        email: row['contactPerson.email'],
+        phone: row['contactPerson.phone']
+      },
+      address: {
+        street: row['address.street'],
+        city: row['address.city'],
+        state: row['address.state'],
+        country: row['address.country']
+      },
+      website: row.website,
+      serviceTypes: row.serviceTypes?.split(';').map(s => s.trim()).filter(Boolean) || [],
+      productCategories: row.productCategories?.split(';').map(s => s.trim()).filter(Boolean) || [],
+      printingMethods: row.printingMethods?.split(';').map(s => s.trim()).filter(Boolean) || [],
+      pricingModels: row.pricingModels?.split(';').map(s => s.trim()).filter(Boolean) || [],
+      minimumOrderQuantity: row.moq ? { value: Number(row.moq), unit: 'pieces' } : undefined,
+      priceRange: row.priceRange || undefined,
+      certifications: [
+        {
+          name: row['certifications.name'],
+          issuedBy: row['certifications.issuedBy'],
+          validUntil: row['certifications.validUntil'] ? new Date(row['certifications.validUntil']) : undefined,
+          verified: row['certifications.verified'] === 'true' || row['certifications.verified'] === true
+        }
+      ],
+      sourcingStatus: row.status || undefined,
+      rating: row.rating ? { overall: Number(row.rating) } : undefined,
+      addedBy: req.user?._id
+    }));
+    const created = await Vendor.insertMany(vendors);
+    res.json({ success: true, count: created.length });
+  } catch (err) {
+    console.error('Bulk import error:', err);
+    res.status(500).json({ message: 'Bulk import failed', error: err.message });
+  }
+});
+
+// Bulk import vendors from uploaded file
+router.post('/bulk-import-file', auth, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'File required' });
+    const csv = req.file.buffer.toString('utf8');
+    const records = csvParse(csv, { columns: true, skip_empty_lines: true, delimiter: ',' });
+    const vendors = records.map(row => ({
+      companyName: row.companyName,
+      businessType: row.businessType,
+      description: row.description,
+      email: row.email,
+      phone: row.phone,
+      website: row.website,
+      address: { raw: row.address },
+      serviceTypes: row.serviceTypes?.split(';').map(s => s.trim()).filter(Boolean) || [],
+      productCategories: row.productCategories?.split(';').map(s => s.trim()).filter(Boolean) || [],
+      pricingModels: row.pricingModels?.split(';').map(s => s.trim()).filter(Boolean) || [],
+      certifications: row.certifications?.split(';').map(s => s.trim()).filter(Boolean) || []
+    }));
+    const created = await Vendor.insertMany(vendors);
+    res.json({ success: true, count: created.length });
+  } catch (err) {
+    console.error('Bulk import file error:', err);
+    res.status(500).json({ message: 'Bulk import file failed', error: err.message });
+  }
+});
 router.get('/stats/overview', auth, async (req, res) => {
   try {
     const stats = await Vendor.aggregate([

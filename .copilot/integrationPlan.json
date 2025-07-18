@@ -1,0 +1,27 @@
+{
+  "strategy": "Incrementally enhance the research system with AI-driven intent analysis, dynamic search strategy, contextual result analysis, and deep data extraction, following the phases in Instructions/researchUpgrade.md.",
+  "phases": [
+    "Phase 1: AI Service Infrastructure (AIServiceManager, API key management, load balancing)",
+    "Phase 2: Search Intent Analysis (intent classification, strategy generation)",
+    "Phase 3: Intelligent Result Processing (contextual analysis, relevance scoring, smart extraction)",
+    "Phase 4: Enhanced Research Flow (multi-layer deep search, cross-referencing, validation)",
+    "Phase 5: Result Quality Assessment (metrics, user feedback)",
+    "Phase 6: Caching & Optimization"
+  ],
+  "dependencies": [
+    "AIServiceManager.js",
+    "API keys for Gemini, HuggingFace, OpenRouter",
+    "callAI utility for LLM calls",
+    "Integration with WebSearchService and DataExtractionService"
+  ],
+  "integrationSteps": [
+    "Implement AIServiceManager with round-robin/fallback logic",
+    "Add intent classification and search strategy generation",
+    "Integrate contextual result analysis and scoring",
+    "Upgrade extraction to support deep, context-driven data gathering",
+    "Refactor research flow to multi-phase pipeline",
+    "On research session creation, fetch links from GoogleSearch API and ScrapingBee, merge with AI deep search links, and process via bulk extraction.",
+    "Add result quality metrics and user feedback collection",
+    "Implement caching and API usage tracking"
+  ]
+}

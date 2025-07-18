@@ -41,6 +41,10 @@ export const vendorAPI = {
   getStats: () => axios.get('/api/vendors/stats/overview'),
   uploadDocuments: (id, formData) => axios.post(`/api/upload/vendor/${id}/documents`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  bulkImport: (data) => axios.post('/api/vendors/bulk-import', data),
+  bulkImportFile: (formData) => axios.post('/api/vendors/bulk-import-file', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 };
 
@@ -79,6 +83,40 @@ export const authAPI = {
 export const uploadAPI = {
   deleteDocument: (data) => axios.delete('/api/upload/document', { data }),
   getFile: (filePath) => `${API_BASE_URL}/api/upload/file/${filePath}`
+};
+
+// Research API functions
+export const researchAPI = {
+  // Session management
+  createSession: (data) => axios.post('/api/research/sessions', data),
+  getAllSessions: (params = {}) => axios.get('/api/research/sessions', { params }),
+  getSession: (sessionId) => axios.get(`/api/research/sessions/${sessionId}`),
+  deleteSession: (sessionId) => axios.delete(`/api/research/sessions/${sessionId}`),
+  
+  // Results management
+  getSessionResults: (sessionId) => axios.get(`/api/research/sessions/${sessionId}/results`),
+  validateResult: (sessionId, resultId, validationData) => 
+    axios.put(`/api/research/sessions/${sessionId}/results/${resultId}/validate`, validationData),
+  bulkValidateResults: (sessionId, resultIds) => 
+    axios.post(`/api/research/sessions/${sessionId}/validate-all`, { resultIds }),
+  
+  // Import to vendors
+  importResults: (sessionId, importData) => 
+    axios.post(`/api/research/sessions/${sessionId}/import`, importData),
+  
+  // Session status and monitoring
+  getSessionStatus: (sessionId) => axios.get(`/api/research/sessions/${sessionId}/status`),
+  cancelSession: (sessionId) => axios.post(`/api/research/sessions/${sessionId}/cancel`),
+  
+  // Export and analytics
+  exportResults: (sessionId, format = 'csv') => 
+    axios.get(`/api/research/sessions/${sessionId}/export`, { 
+      params: { format },
+      responseType: 'blob'
+    }),
+  getSessionStats: (sessionId) => axios.get(`/api/research/sessions/${sessionId}/stats`),
+  getAllStats: () => axios.get('/api/research/stats/overview'),
+  bulkExtract: (data) => axios.post('/api/research/bulk-extract', data),
 };
 
 export default axios;

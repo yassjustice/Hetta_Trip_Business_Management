@@ -5,7 +5,7 @@ import {
   HomeIcon,
   BuildingOfficeIcon,
   FolderIcon,
-  ChartBarSquareIcon,
+  MagnifyingGlassIcon,
   DocumentTextIcon,
   UserIcon,
   XMarkIcon,
@@ -19,7 +19,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Vendors', href: '/vendors', icon: BuildingOfficeIcon },
   { name: 'Projects', href: '/projects', icon: FolderIcon },
-  { name: 'Quote Comparison', href: '/quotes/compare', icon: ChartBarSquareIcon },
+  { name: 'Research', href: '/research', icon: MagnifyingGlassIcon },
   { name: 'Reports', href: '/reports', icon: DocumentTextIcon },
 ];
 

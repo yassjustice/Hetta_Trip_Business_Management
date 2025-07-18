@@ -12,6 +12,11 @@ export const DEFAULT_COLUMNS = [
   { key: 'website', label: 'Website', description: 'Company website', minWidth: '150px' },
   { key: 'contact', label: 'Contact', description: 'Contact person and email', minWidth: '160px' },
   { key: 'products', label: 'Products', description: 'Product categories', minWidth: '180px' },
+  { key: 'serviceTypes', label: 'Services', description: 'Service types offered', minWidth: '160px' },
+  { key: 'printingMethods', label: 'Printing', description: 'Printing methods', minWidth: '150px' },
+  { key: 'moq', label: 'MOQ', description: 'Minimum order quantity', minWidth: '100px' },
+  { key: 'priceRange', label: 'Price Range', description: 'Pricing information', minWidth: '120px' },
+  { key: 'certifications', label: 'Certifications', description: 'Quality certifications', minWidth: '140px' },
   { key: 'status', label: 'Status', description: 'Sourcing status', minWidth: '120px', required: true, editable: true },
   { key: 'rating', label: 'Rating', description: 'Overall rating', minWidth: '100px' },
   { key: 'actions', label: 'Actions', description: 'Available actions', minWidth: '120px', required: true }

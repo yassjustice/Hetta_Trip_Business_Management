@@ -41,6 +41,7 @@ app.get('/api/test', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/vendors', require('./routes/vendors'));
 app.use('/api/projects', require('./routes/projects'));
+app.use('/api/research', require('./routes/research'));
 app.use('/api/upload', require('./routes/upload'));
 
 // Development seed route

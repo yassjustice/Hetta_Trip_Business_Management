@@ -175,9 +175,9 @@ const TablePagination = ({
         {/* Results Info */}
         <div className="flex items-center space-x-4">
           <p className="text-sm text-gray-700">
-            Showing <span className="font-medium">{startItem}</span> to{' '}
-            <span className="font-medium">{endItem}</span> of{' '}
-            <span className="font-medium">{totalItems}</span> results
+            Showing <span className="font-medium">{isNaN(startItem) ? 0 : startItem}</span> to{' '}
+            <span className="font-medium">{isNaN(endItem) ? 0 : endItem}</span> of{' '}
+            <span className="font-medium">{isNaN(totalItems) ? 0 : totalItems}</span> results
             {searchQuery && (
               <span className="text-gray-500 ml-1">
                 for "{searchQuery}"

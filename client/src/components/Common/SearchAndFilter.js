@@ -23,21 +23,44 @@ const SearchAndFilter = ({
   const searchTimeoutRef = useRef(null);
   const suggestionsRef = useRef(null);
 
-  // Handle search suggestions
+  // Handle search suggestions (fixed to prevent infinite update loop)
   useEffect(() => {
     if (searchTerm && searchSuggestions.length > 0) {
       const filtered = searchSuggestions.filter(suggestion =>
         suggestion.toLowerCase().includes(searchTerm.toLowerCase()) &&
         suggestion.toLowerCase() !== searchTerm.toLowerCase()
-      );
-      setFilteredSuggestions(filtered.slice(0, 5)); // Limit to 5 suggestions
-      setShowSuggestions(filtered.length > 0 && searchTerm.length > 1);
-      setSelectedSuggestionIndex(-1);
+      ).slice(0, 5); // Limit to 5 suggestions
+
+      // Only update state if values actually change to prevent infinite loop
+      let shouldUpdateSuggestions = false;
+      if (filteredSuggestions.length !== filtered.length) {
+        shouldUpdateSuggestions = true;
+      } else {
+        for (let i = 0; i < filtered.length; i++) {
+          if (filteredSuggestions[i] !== filtered[i]) {
+            shouldUpdateSuggestions = true;
+            break;
+          }
+        }
+      }
+      if (shouldUpdateSuggestions) {
+        setFilteredSuggestions(filtered);
+      }
+
+      const nextShowSuggestions = filtered.length > 0 && searchTerm.length > 1;
+      if (showSuggestions !== nextShowSuggestions) {
+        setShowSuggestions(nextShowSuggestions);
+      }
+
+      if (selectedSuggestionIndex !== -1) {
+        setSelectedSuggestionIndex(-1);
+      }
     } else {
-      setShowSuggestions(false);
-      setFilteredSuggestions([]);
-      setSelectedSuggestionIndex(-1);
+      if (showSuggestions !== false) setShowSuggestions(false);
+      if (filteredSuggestions.length !== 0) setFilteredSuggestions([]);
+      if (selectedSuggestionIndex !== -1) setSelectedSuggestionIndex(-1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, searchSuggestions]);
 
   // Close suggestions when clicking outside
@@ -62,7 +85,9 @@ const SearchAndFilter = ({
     setIsSearching(true);
     
     searchTimeoutRef.current = setTimeout(() => {
-      onSearch(searchTerm);
+      if (typeof onSearch === 'function') {
+        onSearch(searchTerm);
+      }
       setIsSearching(false);
     }, 300);
 
@@ -73,45 +98,47 @@ const SearchAndFilter = ({
       }
       setIsSearching(false);
     };
-  }, [searchTerm, onSearch]);
+  }, [searchTerm]); // Only searchTerm as dependency, and guard onSearch
 
   const handleFilterChange = useCallback((filterKey, value) => {
-    const newFilters = { ...activeFilters };
-    if (value === '' || value === null || value === undefined) {
-      delete newFilters[filterKey];
-    } else {
-      newFilters[filterKey] = value;
-    }
-    setActiveFilters(newFilters);
-    onFilter(newFilters);
-  }, [activeFilters, onFilter]);
+    setActiveFilters(prevFilters => {
+      const newFilters = { ...prevFilters };
+      if (value === '' || value === null || value === undefined) {
+        delete newFilters[filterKey];
+      } else {
+        newFilters[filterKey] = value;
+      }
+      if (onFilter) {
+        onFilter(newFilters);
+      }
+      return newFilters;
+    });
+  }, [onFilter]);
 
-  const clearAllFilters = useCallback(() => {
+
+  const clearAllFilters = () => {
     setActiveFilters({});
     setSearchTerm('');
     setShowSuggestions(false);
-    onFilter({});
-    onSearch('');
-    if (clearFilters) clearFilters();
+    if (typeof onFilter === 'function') onFilter({});
+    if (typeof clearFilters === 'function') clearFilters();
     // Focus search input after clearing
     setTimeout(() => {
       searchInputRef.current?.focus();
     }, 100);
-  }, [onFilter, onSearch, clearFilters]);
+  };
 
-  const clearSearchOnly = useCallback(() => {
+  const clearSearchOnly = () => {
     setSearchTerm('');
     setShowSuggestions(false);
-    onSearch('');
     searchInputRef.current?.focus();
-  }, [onSearch]);
+  };
 
-  const handleSuggestionClick = useCallback((suggestion) => {
+  const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion);
     setShowSuggestions(false);
-    onSearch(suggestion);
     searchInputRef.current?.focus();
-  }, [onSearch]);
+  };
 
   const handleSearchKeyDown = (e) => {
     if (showSuggestions && filteredSuggestions.length > 0) {
@@ -131,7 +158,6 @@ const SearchAndFilter = ({
           if (selectedSuggestionIndex >= 0) {
             handleSuggestionClick(filteredSuggestions[selectedSuggestionIndex]);
           } else {
-            onSearch(searchTerm);
             setShowSuggestions(false);
           }
           break;
@@ -151,9 +177,6 @@ const SearchAndFilter = ({
         case 'Escape':
           setSearchTerm('');
           searchInputRef.current?.blur();
-          break;
-        case 'Enter':
-          onSearch(searchTerm);
           break;
         default:
           break;
